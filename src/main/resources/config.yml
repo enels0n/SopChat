@@ -1,0 +1,99 @@
+database:
+  type: sqlite
+  table-prefix: sopchat_
+  sqlite-file: chat.db
+  host: 127.0.0.1
+  port: 3306
+  database: minecraft
+  username: root
+  password: ""
+  pool-name: SopChat
+  maximum-pool-size: 10
+  minimum-idle: 2
+  connection-timeout: 30000
+  idle-timeout: 600000
+  max-lifetime: 1800000
+
+formatting:
+  allow-colors: true
+  allow-styles: true
+  allow-magic: false
+  allow-hex: true
+  allow-minimessage: true
+  allow-message-placeholders: true
+  permissions:
+    color: "sopchat.format.color"
+    style: "sopchat.format.style"
+    magic: "sopchat.format.magic"
+    hex: "sopchat.format.hex"
+    minimessage: "sopchat.format.minimessage"
+    placeholders: "sopchat.format.placeholders"
+
+anti-flood:
+  enabled: true
+  message-cooldown-seconds: 1.5
+  bypass-permission: "sopchat.antiflood.bypass"
+
+anti-repeat:
+  enabled: true
+  same-message-delay-seconds: 15
+  normalize-case: true
+  trim-extra-spaces: true
+
+anti-spam:
+  enabled: true
+  block-ipv4: true
+  block-domains: true
+  bypass-permission: "sopchat.antispam.bypass"
+  whitelist: []
+  blacklist:
+    - "discord.gg"
+  regex-rules:
+    - "(?i)https?://"
+
+mentions:
+  enabled: true
+  hide-self-mention: true
+  match-display-name: true
+  ignore-case: true
+  ignore-vanished-players: true
+  mask: "&e@{player}"
+  display-name-mask: "&e@{display_name}"
+  play-sound: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 1.0
+  pitch: 1.0
+
+channels:
+  enabled: true
+  format: "&d[{channel}] &f{player}: {message}"
+  limits:
+    owned-per-player: 1
+    members-per-channel: 20
+  invites:
+    expire-seconds: 300
+    minimessage-buttons: true
+  history:
+    enabled: true
+    store-limit: 100
+    preview-on-open: 10
+    retention-days: 7
+  unread:
+    enabled: true
+    notify-on-join: true
+
+private-messages:
+  enabled: true
+  allow-offline-messages: true
+  format-outgoing: "&8[&aЯ &7-> &f{target}&8] &7{message}"
+  format-incoming: "&8[&f{sender} &7-> &aЯ&8] &7{message}"
+  notify-unread-on-join: true
+
+join-quit:
+  enabled: true
+  join:
+    default: "&a+ {player}"
+    rules: []
+  quit:
+    default: "&c- {player}"
+    rules: []

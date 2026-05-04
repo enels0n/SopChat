@@ -1,0 +1,39 @@
+name: SopChat
+main: net.enelson.sopchat.SopChatPlugin
+version: ${project.version}
+api-version: 1.16
+depend: [SopLib]
+softdepend: [PlaceholderAPI]
+
+commands:
+  chat:
+    usage: /chat
+    permission: sopchat.use
+  channel:
+    usage: /channel
+    permission: sopchat.use
+  msg:
+    aliases: [m, tell]
+    usage: /msg <player> <message>
+    permission: sopchat.use
+  reply:
+    aliases: [r]
+    usage: /reply <message>
+    permission: sopchat.use
+  ignore:
+    usage: /ignore <player>
+    permission: sopchat.use
+  unignore:
+    usage: /unignore <player>
+    permission: sopchat.use
+  socialspy:
+    usage: /socialspy
+    permission: sopchat.spy
+
+permissions:
+  sopchat.use:
+    default: true
+  sopchat.spy:
+    default: op
+  sopchat.format.placeholders:
+    default: op

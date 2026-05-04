@@ -1,0 +1,43 @@
+chat-types:
+  normal:
+    trigger: ""
+    mode: radius
+    radius: 100
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "{player}: {message}"
+
+  quiet:
+    trigger: "@"
+    mode: radius
+    radius: 20
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&7[Тихий] {player}: {message}"
+
+  super_quiet:
+    trigger: "@@"
+    mode: radius
+    radius: 2
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&8[Супертихий] {player}: {message}"
+
+  world:
+    trigger: "!"
+    mode: world
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&a[Мир] {player}: {message}"
+
+  global:
+    trigger: "!!"
+    mode: global
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&6[Глобальный] {player}: {message}"

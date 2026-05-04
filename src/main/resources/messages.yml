@@ -1,0 +1,13 @@
+messages:
+  prefix: "&6SopChat &8| "
+  no-permission: "{prefix}&cНедостаточно прав."
+  player-only: "{prefix}&cКоманда доступна только игроку."
+  reload: "{prefix}&aКонфигурация SopChat перезагружена."
+  unknown-chat-type: "{prefix}&cНе удалось определить тип чата."
+  channel-created: "{prefix}&aКанал &e{channel}&a создан."
+  channel-deleted: "{prefix}&eКанал &6{channel}&e удалён."
+  channel-owner-transferred: "{prefix}&aВладелец канала &e{channel}&a изменён на &e{player}&a."
+  channel-not-owner: "{prefix}&cТолько владелец канала может это сделать."
+  channel-invite-sent: "{prefix}&aПриглашение отправлено игроку &e{player}&a."
+  channel-invite-received: "{prefix}&eВас пригласили в канал &6{channel}&e."
+  unread-summary: "{prefix}&eУ вас &6{messages}&e непрочитанных сообщений в &6{channels}&e каналах."
