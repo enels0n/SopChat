@@ -57,7 +57,7 @@ mentions:
   match-display-name: true
   ignore-case: true
   ignore-vanished-players: true
-  mask: "&e@{player}"
+  mask: "&e@{display_name}"
   display-name-mask: "&e@{display_name}"
   play-sound: true
   sound: ENTITY_EXPERIENCE_ORB_PICKUP

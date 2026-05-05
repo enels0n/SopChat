@@ -87,14 +87,22 @@ public final class ChatListener implements Listener {
         }
 
         String messageContent = canUseMessagePlaceholders(player) ? applyPlaceholders(player, content) : content;
-        String formattedMessage = this.plugin.getChatFormattingService().formatPlayerMessage(player, messageContent);
-        MentionResult mentionResult = type.isMentionEnabled()
-                ? this.plugin.getMentionService().processMentions(player, formattedMessage)
-                : new MentionResult(formattedMessage, java.util.Collections.<java.util.UUID>emptySet());
+        String sanitizedMessage = this.plugin.getChatFormattingService().sanitizePlayerMessage(player, messageContent);
         String formattedTemplate = applyPlaceholders(player, type.getFormat());
+        String templatePrefix = formattedTemplate
+                .replace("{player}", player.getName())
+                .replace("{chat_type}", type.getId())
+                .replace("{message}", "");
+        String baseMessageColors = org.bukkit.ChatColor.getLastColors(
+                this.plugin.getChatFormattingService().formatSystemMessage(templatePrefix)
+        );
+        MentionResult mentionResult = type.isMentionEnabled()
+                ? this.plugin.getMentionService().processMentions(player, sanitizedMessage, baseMessageColors)
+                : new MentionResult(sanitizedMessage, java.util.Collections.<java.util.UUID>emptySet());
+        String formattedMessage = this.plugin.getChatFormattingService().formatPlayerMessage(player, mentionResult.getMessage());
         String output = formattedTemplate
                 .replace("{player}", player.getName())
-                .replace("{message}", mentionResult.getMessage())
+                .replace("{message}", formattedMessage)
                 .replace("{chat_type}", type.getId());
 
         event.setCancelled(true);

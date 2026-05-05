@@ -27,6 +27,10 @@ public final class ChatFormattingService {
         return this.textUtils.color(filtered);
     }
 
+    public String sanitizePlayerMessage(Player player, String input) {
+        return stripUnauthorizedFormatting(player, input == null ? "" : input);
+    }
+
     public String formatSystemMessage(String input) {
         return this.textUtils.color(input);
     }

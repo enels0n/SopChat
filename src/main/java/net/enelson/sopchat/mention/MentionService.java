@@ -32,6 +32,10 @@ public final class MentionService {
     }
 
     public MentionResult processMentions(Player sender, String formattedMessage) {
+        return processMentions(sender, formattedMessage, "");
+    }
+
+    public MentionResult processMentions(Player sender, String formattedMessage, String baseMessageColors) {
         if (!this.plugin.getConfig().getBoolean("mentions.enabled", true) || formattedMessage == null || formattedMessage.isEmpty()) {
             return new MentionResult(formattedMessage, new HashSet<UUID>());
         }
@@ -47,8 +51,8 @@ public final class MentionService {
             if (target == null) {
                 continue;
             }
-            String restoreFormat = ChatColor.getLastColors(formattedMessage.substring(0, Math.min(matcher.end(), formattedMessage.length())));
-            String replacement = Matcher.quoteReplacement(target.getFormattedValue() + (restoreFormat == null ? "" : restoreFormat));
+            String restoreFormat = resolveRestoreFormat(baseMessageColors, formattedMessage, matcher.end());
+            String replacement = Matcher.quoteReplacement(target.getFormattedValue() + restoreFormat);
             matcher.appendReplacement(buffer, replacement);
             changed = true;
             mentioned.add(target.getUniqueId());
@@ -148,6 +152,15 @@ public final class MentionService {
         return this.plugin.getConfig().getBoolean("mentions.ignore-case", true)
                 ? value.toLowerCase(Locale.ROOT)
                 : value;
+    }
+
+    private String resolveRestoreFormat(String baseMessageColors, String originalMessage, int endIndex) {
+        String visiblePrefix = originalMessage.substring(0, Math.min(endIndex, originalMessage.length()));
+        String restore = ChatColor.getLastColors((baseMessageColors == null ? "" : baseMessageColors) + visiblePrefix);
+        if (restore == null) {
+            restore = "";
+        }
+        return ChatColor.RESET.toString() + restore;
     }
 
     private Sound resolveSound(String raw) {

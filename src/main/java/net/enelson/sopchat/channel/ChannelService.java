@@ -158,14 +158,21 @@ public final class ChannelService {
         if (role == null) {
             throw new SQLException("You are not a member of this channel");
         }
-        String formattedPlayerMessage = this.plugin.getChatFormattingService().formatPlayerMessage(sender, message);
-        MentionResult mentionResult = this.plugin.getMentionService().processMentions(sender, formattedPlayerMessage);
-        ChannelMessage stored = saveChannelMessage(channel, sender, mentionResult.getMessage());
+        String sanitizedMessage = this.plugin.getChatFormattingService().sanitizePlayerMessage(sender, message);
         String format = this.plugin.getConfig().getString("channels.format", "&d[{channel}] &f{player}: {message}");
+        String formatPrefix = format.replace("{channel}", channel.getName())
+                .replace("{player}", sender.getName())
+                .replace("{message}", "");
+        String baseMessageColors = org.bukkit.ChatColor.getLastColors(
+                this.plugin.getChatFormattingService().formatSystemMessage(formatPrefix)
+        );
+        MentionResult mentionResult = this.plugin.getMentionService().processMentions(sender, sanitizedMessage, baseMessageColors);
+        String formattedPlayerMessage = this.plugin.getChatFormattingService().formatPlayerMessage(sender, mentionResult.getMessage());
+        ChannelMessage stored = saveChannelMessage(channel, sender, formattedPlayerMessage);
         String renderedMessage = this.plugin.getChatFormattingService().formatSystemMessage(
                 format.replace("{channel}", channel.getName())
                         .replace("{player}", sender.getName())
-                        .replace("{message}", mentionResult.getMessage())
+                        .replace("{message}", formattedPlayerMessage)
         );
 
         Set<java.util.UUID> onlineRecipients = new HashSet<java.util.UUID>();
