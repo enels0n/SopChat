@@ -5,6 +5,8 @@ import net.enelson.sopchat.SopChatPlugin;
 import net.enelson.sopchat.chat.ChatRoute;
 import net.enelson.sopchat.chat.ChatTypeDefinition;
 import net.enelson.sopchat.chat.ChatTypeMode;
+import net.enelson.sopchat.guard.ChatGuardResult;
+import net.enelson.sopchat.mention.MentionResult;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +28,29 @@ public final class ChatListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+        if (!this.plugin.getChatTypeService().hasExplicitTrigger(event.getMessage())) {
+            try {
+                net.enelson.sopchat.channel.PlayerChannel activeChannel = this.plugin.getChannelService().getActiveChannel(player);
+                if (activeChannel != null) {
+                    event.setCancelled(true);
+                    ChatGuardResult guardResult = this.plugin.getChatGuardService().check(player, event.getMessage());
+                    if (!guardResult.isAllowed()) {
+                        if (guardResult.getMessage() != null && !guardResult.getMessage().isEmpty()) {
+                            player.sendMessage(guardResult.getMessage());
+                        }
+                        return;
+                    }
+                    this.plugin.getChannelService().sendChannelMessage(player, activeChannel.getName(), event.getMessage());
+                    return;
+                }
+            } catch (Exception exception) {
+                player.sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(
+                        (this.plugin.getMessageConfig().get("prefix", "&6SopChat &8| ") + "&c" + exception.getMessage())
+                ));
+                event.setCancelled(true);
+                return;
+            }
+        }
         ChatRoute route = this.plugin.getChatTypeService().resolveRoute(event.getMessage());
         if (route == null) {
             player.sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(
@@ -52,17 +77,32 @@ public final class ChatListener implements Listener {
             return;
         }
 
+        ChatGuardResult guardResult = this.plugin.getChatGuardService().check(player, content);
+        if (!guardResult.isAllowed()) {
+            event.setCancelled(true);
+            if (guardResult.getMessage() != null && !guardResult.getMessage().isEmpty()) {
+                player.sendMessage(guardResult.getMessage());
+            }
+            return;
+        }
+
         String messageContent = canUseMessagePlaceholders(player) ? applyPlaceholders(player, content) : content;
         String formattedMessage = this.plugin.getChatFormattingService().formatPlayerMessage(player, messageContent);
+        MentionResult mentionResult = type.isMentionEnabled()
+                ? this.plugin.getMentionService().processMentions(player, formattedMessage)
+                : new MentionResult(formattedMessage, java.util.Collections.<java.util.UUID>emptySet());
         String formattedTemplate = applyPlaceholders(player, type.getFormat());
         String output = formattedTemplate
                 .replace("{player}", player.getName())
-                .replace("{message}", formattedMessage)
+                .replace("{message}", mentionResult.getMessage())
                 .replace("{chat_type}", type.getId());
 
         event.setCancelled(true);
         for (Player recipient : resolveRecipients(player, type)) {
             recipient.sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(output));
+            if (mentionResult.getMentionedPlayers().contains(recipient.getUniqueId())) {
+                this.plugin.getMentionService().playMentionSound(recipient);
+            }
         }
         Bukkit.getConsoleSender().sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(output));
     }

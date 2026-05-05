@@ -35,5 +35,19 @@ permissions:
     default: true
   sopchat.spy:
     default: op
+  sopchat.reload:
+    default: op
   sopchat.format.placeholders:
+    default: op
+  sopchat.antiflood.bypass:
+    default: op
+  sopchat.antispam.bypass:
+    default: op
+  sopchat.moderation.clear:
+    default: op
+  sopchat.moderation.slowmode:
+    default: op
+  sopchat.moderation.globalmute:
+    default: op
+  sopchat.moderation.bypass:
     default: op

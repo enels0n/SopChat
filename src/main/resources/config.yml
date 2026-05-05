@@ -97,3 +97,80 @@ join-quit:
   quit:
     default: "&c- {player}"
     rules: []
+
+gui:
+  main:
+    title: "&8SopChat"
+    items:
+      channels:
+        material: BOOK
+        custom-model-data: 0
+        name: "&dChannels"
+        lore:
+          - "&7Open your channels"
+      invites:
+        material: WRITABLE_BOOK
+        custom-model-data: 0
+        name: "&eInvites"
+        lore:
+          - "&7Open channel invites"
+      private-messages:
+        material: PAPER
+        custom-model-data: 0
+        name: "&bPrivate messages"
+        lore:
+          - "&7Private message hub"
+      ignore-list:
+        material: BARRIER
+        custom-model-data: 0
+        name: "&cIgnore list"
+        lore:
+          - "&7Manage ignored players"
+  channels:
+    title: "&8Your channels"
+    empty:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      name: "&7No channels yet"
+      lore:
+        - "&7Create one with &e/channel create <name>"
+  invites:
+    title: "&8Channel invites"
+  private-messages:
+    title: "&8Private messages"
+    empty:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      name: "&7No conversations yet"
+      lore:
+        - "&7Use &e/m <player> <message>"
+    conversation-title: "&8Conversation: {player}"
+  ignore-list:
+    title: "&8Ignore list"
+    empty:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      name: "&7Nobody ignored"
+      lore:
+        - "&7Your ignore list is empty."
+  channel-history:
+    title: "&8Channel history: {channel}"
+  shared:
+    back:
+      material: ARROW
+      custom-model-data: 0
+      name: "&aBack"
+      lore:
+        - "&7Return to the main menu"
+    back-to-channels:
+      material: ARROW
+      custom-model-data: 0
+      name: "&aBack"
+      lore:
+        - "&7Return to channels"
+    back-to-private-messages:
+      material: ARROW
+      custom-model-data: 0
+      name: "&aBack"
+      lore:
+        - "&7Return to private messages"

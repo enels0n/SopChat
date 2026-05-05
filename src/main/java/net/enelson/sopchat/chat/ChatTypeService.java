@@ -79,6 +79,20 @@ public final class ChatTypeService {
         return normal == null ? null : new ChatRoute(normal, message.trim());
     }
 
+    public boolean hasExplicitTrigger(String rawMessage) {
+        String message = rawMessage == null ? "" : rawMessage;
+        for (ChatTypeDefinition definition : this.sortedByTriggerLength) {
+            String trigger = definition.getTrigger();
+            if (trigger == null || trigger.isEmpty()) {
+                continue;
+            }
+            if (message.startsWith(trigger)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<ChatTypeDefinition> getTypes() {
         return Collections.unmodifiableList(this.sortedByTriggerLength);
     }
