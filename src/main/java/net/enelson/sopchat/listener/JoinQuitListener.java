@@ -1,6 +1,8 @@
 package net.enelson.sopchat.listener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.enelson.sopchat.SopChatPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +25,10 @@ public final class JoinQuitListener implements Listener {
         if (!plugin.getConfig().getBoolean("join-quit.enabled", true)) {
             return;
         }
+        if (!event.getPlayer().hasPlayedBefore()) {
+            event.setJoinMessage(resolveMessage(event.getPlayer(), "join-quit.first-join", "&6✦ {player}"));
+            return;
+        }
         event.setJoinMessage(resolveMessage(event.getPlayer(), "join-quit.join", "&a+ {player}"));
     }
 
@@ -41,13 +47,21 @@ public final class JoinQuitListener implements Listener {
             for (Map<?, ?> entry : rules) {
                 Object permissionObject = entry.get("permission");
                 String permission = permissionObject == null ? "" : permissionObject.toString();
-                if (permission == null || permission.isEmpty() || player.hasPermission(permission)) {
+                if (permission == null || permission.isEmpty() || player.isPermissionSet(permission)) {
                     Object formatObject = entry.get("format");
                     format = formatObject == null ? format : formatObject.toString();
                     break;
                 }
             }
         }
-        return plugin.getChatFormattingService().formatSystemMessage(format.replace("{player}", player.getName()));
+        String resolved = format.replace("{player}", player.getName());
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            try {
+                resolved = PlaceholderAPI.setPlaceholders(player, resolved);
+            } catch (Throwable ignored) {
+                // Keep raw system message if PlaceholderAPI fails unexpectedly.
+            }
+        }
+        return plugin.getChatFormattingService().formatSystemMessage(resolved);
     }
 }

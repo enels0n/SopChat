@@ -91,12 +91,27 @@ private-messages:
 
 join-quit:
   enabled: true
+  first-join:
+    default: "&6✦ {player}"
+    rules:
+      - permission: "group.premium"
+        format: "&d✦ &f{player} &dвпервые зашел на сервер!"
+      - permission: "group.vip"
+        format: "&b✦ &f{player} &bвпервые зашел на сервер!"
   join:
     default: "&a+ {player}"
-    rules: []
+    rules:
+      - permission: "group.premium"
+        format: "&d⬑ &f{player} &dзашел на сервер"
+      - permission: "group.vip"
+        format: "&b⬑ &f{player} &bзашел на сервер"
   quit:
     default: "&c- {player}"
-    rules: []
+    rules:
+      - permission: "group.premium"
+        format: "&d⬏ &f{player} &dвышел с сервера"
+      - permission: "group.vip"
+        format: "&b⬏ &f{player} &bвышел с сервера"
 
 gui:
   main:
