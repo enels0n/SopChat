@@ -1,4 +1,5 @@
 chat-types:
+  # Standard local chat.
   normal:
     trigger: ""
     mode: radius
@@ -8,6 +9,7 @@ chat-types:
     mention-enabled: true
     format: "{player}: {message}"
 
+  # Short-radius local chat.
   quiet:
     trigger: "@"
     mode: radius
@@ -15,8 +17,9 @@ chat-types:
     permission: ""
     deny-if-no-permission: false
     mention-enabled: true
-    format: "&7[Тихий] {player}: {message}"
+    format: "&7[Quiet] {player}: {message}"
 
+  # Very short-radius local chat.
   super_quiet:
     trigger: "@@"
     mode: radius
@@ -24,20 +27,143 @@ chat-types:
     permission: ""
     deny-if-no-permission: false
     mention-enabled: true
-    format: "&8[Супертихий] {player}: {message}"
+    format: "&8[Super Quiet] {player}: {message}"
 
+  # Built-in same-world chat. This is still the best option when you want
+  # "sender world -> only players in the same world" without hardcoding world names.
   world:
     trigger: "!"
     mode: world
     permission: ""
     deny-if-no-permission: false
     mention-enabled: true
-    format: "&a[Мир] {player}: {message}"
+    format: "&a[World] {player}: {message}"
 
+  # Global chat available everywhere.
   global:
     trigger: "!!"
     mode: global
     permission: ""
     deny-if-no-permission: false
     mention-enabled: true
-    format: "&6[Глобальный] {player}: {message}"
+    format: "&6[Global] {player}: {message}"
+
+  # Example: a chat type available only in one specific world.
+  # Players outside that world cannot send to it and will not receive it.
+  spawn:
+    trigger: "#"
+    mode: global
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&b[Spawn] {player}: {message}"
+    conditions:
+      type: all
+      checks:
+        - type: string equals
+          input: "{world}"
+          output: "spawn"
+    visibility-conditions:
+      type: all
+      checks:
+        - type: string equals
+          input: "{world}"
+          output: "spawn"
+
+  # Example: a permission-gated chat type using conditions.
+  staff:
+    trigger: "$"
+    mode: global
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&c[Staff] {player}: {message}"
+    conditions:
+      type: all
+      checks:
+        - type: has perm
+          output: "sopchat.staff"
+    visibility-conditions:
+      type: all
+      checks:
+        - type: has perm
+          output: "sopchat.staff"
+
+  # Example: players can write from anywhere, but only players in the event world can see it.
+  event_feed:
+    trigger: "%"
+    mode: global
+    permission: ""
+    deny-if-no-permission: false
+    mention-enabled: true
+    format: "&d[Event] {player}: {message}"
+    visibility-conditions:
+      type: all
+      checks:
+        - type: string equals
+          input: "{world}"
+          output: "event"
+
+  # Conditions notes:
+  # - type: all -> every check must pass
+  # - type: any -> at least one check must pass
+  # - Supported check types:
+  #   has perm
+  #   !has perm
+  #   string equals
+  #   !string equals
+  #   >
+  #   >=
+  #   <
+  #   <=
+  #   number equals
+  #   !=
+  #
+  # Useful placeholders in condition input values:
+  #   {player}
+  #   {world}
+  #   {world_name}
+  # And PlaceholderAPI placeholders also work when PlaceholderAPI is installed.
+  # This applies to both input and output values.
+  #
+  # visibility-conditions:
+  # - Checked only for recipients.
+  # - Use this when a player may send a message, but only some players should see it.
+  #
+  # Extra examples:
+  #
+  # vip:
+  #   trigger: "&"
+  #   mode: global
+  #   format: "&6[VIP] {player}: {message}"
+  #   conditions:
+  #     type: any
+  #     checks:
+  #       - type: string equals
+  #         input: "%luckperms_primary_group_name%"
+  #         output: "vip"
+  #       - type: string equals
+  #         input: "%luckperms_primary_group_name%"
+  #         output: "premium"
+  #
+  # high_level:
+  #   trigger: "^"
+  #   mode: global
+  #   format: "&d[HighLevel] {player}: {message}"
+  #   conditions:
+  #     type: all
+  #     checks:
+  #       - type: ">="
+  #         input: "%player_level%"
+  #         output: "30"
+  #
+  # papi_compare:
+  #   trigger: "*"
+  #   mode: global
+  #   format: "&e[PAPI] {player}: {message}"
+  #   conditions:
+  #     type: all
+  #     checks:
+  #       - type: string equals
+  #         input: "%player_world%"
+  #         output: "%server_spawn_world%"

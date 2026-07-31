@@ -21,6 +21,9 @@ import net.enelson.sopchat.storage.SqlDirectMessageRepository;
 import net.enelson.sopchat.storage.SqlPlayerPreferenceRepository;
 import net.enelson.sopli.lib.SopLib;
 import net.enelson.sopli.lib.database.SopDatabase;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -144,6 +147,23 @@ public final class SopChatPlugin extends JavaPlugin {
 
     public ModerationService getModerationService() {
         return this.moderationService;
+    }
+
+    public String resolveConditionPlaceholders(Player player, String input) {
+        if (input == null) {
+            return "";
+        }
+        String value = input;
+        value = value.replace("{player}", player == null ? "" : player.getName());
+        value = value.replace("{world}", player == null || player.getWorld() == null ? "" : player.getWorld().getName());
+        value = value.replace("{world_name}", player == null || player.getWorld() == null ? "" : player.getWorld().getName());
+        if (player != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            try {
+                value = PlaceholderAPI.setPlaceholders(player, value);
+            } catch (Throwable ignored) {
+            }
+        }
+        return value;
     }
 
     private void saveResourceIfMissing(String path) {

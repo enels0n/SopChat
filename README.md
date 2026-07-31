@@ -12,6 +12,7 @@
 ## Features
 
 - Local/radius, world and global chat types from config
+- Per-chat-type conditions for world, permission, and PlaceholderAPI-driven routing
 - Player-created channels with invites, transfer, kick, leave and delete
 - Active channel mode via `/channel use`
 - Private messages via `/msg`, `/m`, `/tell`, `/reply`, `/r`
@@ -32,8 +33,42 @@ Configured in [chat-types.yml](src/main/resources/chat-types.yml):
 - `@@` - super quiet chat, radius `2`
 - `!` - world chat
 - `!!` - global chat
+- `#` - spawn-only chat example using `conditions`
+- `$` - staff chat example using `conditions`
 
 All triggers, formats, permissions and radii can be changed in config.
+
+## Conditions
+
+Each chat type can optionally define `conditions` and `visibility-conditions`:
+
+```yml
+spawn:
+  trigger: "#"
+  mode: global
+  format: "&b[Spawn] {player}: {message}"
+  conditions:
+    type: all
+    checks:
+      - type: string equals
+        input: "{world}"
+        output: "spawn"
+  visibility-conditions:
+    type: all
+    checks:
+      - type: string equals
+        input: "{world}"
+        output: "spawn"
+```
+
+Notes:
+
+- `type: all` means every check must pass
+- `type: any` means at least one check must pass
+- `conditions` are checked for the sender
+- `visibility-conditions` are checked for each recipient
+- Useful inputs include `{world}`, `{world_name}`, `{player}`, and PlaceholderAPI placeholders
+- For "same world as sender" routing, built-in `mode: world` is still the simplest choice
 
 ## Commands
 
@@ -118,4 +153,3 @@ Required:
 
 Optional:
 - `PlaceholderAPI`
-

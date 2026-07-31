@@ -1,5 +1,6 @@
 messages:
   prefix: "&6SopChat &8| "
+  chat-type-unavailable: "{prefix}&cThis chat type is unavailable here."
   no-permission: "{prefix}&cНедостаточно прав."
   player-only: "{prefix}&cКоманда доступна только игроку."
   reload: "{prefix}&aКонфигурация SopChat перезагружена."

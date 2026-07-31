@@ -10,8 +10,10 @@ public final class ChatTypeDefinition {
     private final boolean denyIfNoPermission;
     private final boolean mentionEnabled;
     private final String format;
+    private final ChatConditions conditions;
+    private final ChatConditions visibilityConditions;
 
-    public ChatTypeDefinition(String id, String trigger, ChatTypeMode mode, int radius, String permission, boolean denyIfNoPermission, boolean mentionEnabled, String format) {
+    public ChatTypeDefinition(String id, String trigger, ChatTypeMode mode, int radius, String permission, boolean denyIfNoPermission, boolean mentionEnabled, String format, ChatConditions conditions, ChatConditions visibilityConditions) {
         this.id = id;
         this.trigger = trigger;
         this.mode = mode;
@@ -20,6 +22,8 @@ public final class ChatTypeDefinition {
         this.denyIfNoPermission = denyIfNoPermission;
         this.mentionEnabled = mentionEnabled;
         this.format = format;
+        this.conditions = conditions == null ? ChatConditions.alwaysAllowed() : conditions;
+        this.visibilityConditions = visibilityConditions == null ? ChatConditions.alwaysAllowed() : visibilityConditions;
     }
 
     public String getId() {
@@ -52,5 +56,13 @@ public final class ChatTypeDefinition {
 
     public String getFormat() {
         return this.format;
+    }
+
+    public ChatConditions getConditions() {
+        return this.conditions;
+    }
+
+    public ChatConditions getVisibilityConditions() {
+        return this.visibilityConditions;
     }
 }

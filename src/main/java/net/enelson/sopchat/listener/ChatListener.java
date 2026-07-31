@@ -25,7 +25,7 @@ public final class ChatListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (!this.plugin.getChatTypeService().hasExplicitTrigger(event.getMessage())) {
@@ -71,6 +71,15 @@ public final class ChatListener implements Listener {
             return;
         }
 
+        if (!type.getConditions().test(this.plugin, player)) {
+            player.sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(
+                    this.plugin.getMessageConfig().get("chat-type-unavailable", "{prefix}&cThis chat type is unavailable here.")
+                            .replace("{prefix}", this.plugin.getMessageConfig().get("prefix", "&6SopChat &8| "))
+            ));
+            event.setCancelled(true);
+            return;
+        }
+
         String content = route.getContent();
         if (content.isEmpty()) {
             event.setCancelled(true);
@@ -107,6 +116,9 @@ public final class ChatListener implements Listener {
 
         event.setCancelled(true);
         for (Player recipient : resolveRecipients(player, type)) {
+            if (!type.getVisibilityConditions().test(this.plugin, recipient)) {
+                continue;
+            }
             recipient.sendMessage(this.plugin.getChatFormattingService().formatSystemMessage(output));
             if (mentionResult.getMentionedPlayers().contains(recipient.getUniqueId())) {
                 this.plugin.getMentionService().playMentionSound(recipient);

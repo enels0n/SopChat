@@ -46,7 +46,9 @@ public final class ChatTypeService {
                     entry.getString("permission", ""),
                     entry.getBoolean("deny-if-no-permission", false),
                     entry.getBoolean("mention-enabled", true),
-                    entry.getString("format", "{player}: {message}")
+                    entry.getString("format", "{player}: {message}"),
+                    ChatConditions.fromSection(entry.getConfigurationSection("conditions")),
+                    ChatConditions.fromSection(entry.getConfigurationSection("visibility-conditions"))
             );
             this.types.put(id.toLowerCase(Locale.ROOT), definition);
             this.sortedByTriggerLength.add(definition);
